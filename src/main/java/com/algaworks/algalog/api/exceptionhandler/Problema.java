@@ -1,6 +1,6 @@
 package com.algaworks.algalog.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,7 +16,7 @@ import lombok.Setter;
 public class Problema {
 	
 	private Integer status;
-	private LocalDateTime datahora;
+	private OffsetDateTime datahora;
 	private String titulo;
 	
 	//Como o problema pode ser causado por mais de uma violação de validação, iremos:
