@@ -2,7 +2,10 @@ package com.algaworks.algalog.domain.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
@@ -51,6 +55,12 @@ public class Entrega {
 	@NotNull
 	private BigDecimal taxa;
 	
+	//O cascade é para fazer o cascateamento das ocorrencias;
+	//Quando adicionarmos uma nova instancia de ocorrencia dentro da entrega, 
+	//a ideia é que ele faça o cascateamento e sincronize as ocorrencias no BD;
+	@OneToMany(mappedBy = "entrega", cascade = CascadeType.ALL)
+	private List<Ocorrencia> ocorrencias = new ArrayList<>();
+	
 	//Usaremos o READ_ONLY para evitar que o consumidor da API passe esses atributos na requisição;
 	@JsonProperty(access = Access.READ_ONLY)
 	@Enumerated(EnumType.STRING)
@@ -62,5 +72,14 @@ public class Entrega {
 	@JsonProperty(access = Access.READ_ONLY)
 	private OffsetDateTime dataFinalizacao;
 	
+	public Ocorrencia adicionarOcorrencia(String descricao) {
+		Ocorrencia ocorrencia = new Ocorrencia();
+		ocorrencia.setDescricao(descricao);
+		ocorrencia.setDataRegistro(OffsetDateTime.now());
+		ocorrencia.setEntrega(this);
+		
+		this.getOcorrencias().add(ocorrencia);
+		return ocorrencia;
+	}
 	
 }
